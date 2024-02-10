@@ -1,0 +1,129 @@
+{% extends "shop/base.html" %}
+{% block content %}
+      <div class="row">
+        <div class="col-md-12 mt-3">
+          <ul id="item_list" class="list-group">
+            {% comment %} javascript {% endcomment %}
+          </ul>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+        if (localStorage.getItem("cart") == null) {
+          var cart = {};
+        } else {
+          cart = JSON.parse(localStorage.getItem("cart"));
+        }
+        let total = 0;
+        for (item in cart) {
+          let name = cart[item][1];
+          let quantity = cart[item][0];
+          let price = cart[item][2];
+    
+          total = total + price;
+    
+          itemStr = `<li class='list-group-item'> <span class=''> ${quantity} </span> of ${name} <span class='badge text-bg-warning rounded-pill'> $${price} </span></li>`;
+          $("#item_list").append(itemStr);
+        }
+        totalPrice = `<li class='list-group-item d-flex justify-content-between align-items-center'> <b>Total </b>  $${total}</li>`;
+        $("#item_list").append(totalPrice);
+        $("#items").val(JSON.stringify(cart));
+      </script>
+
+      <div class="col-md-12 mt-3">
+        <h3>Checkout Form</h3>
+        <form class="row g-3" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="items" id="items" />
+          <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              class="form-control"
+              id="inputEmail4"
+              value={{user.username}}
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="text"
+              class="form-control"
+              id="inputPassword4"
+              value={{user.email}}
+            />
+          </div>
+          <div class="col-12">
+            <label for="inputAddress" class="form-label">Address</label>
+            <input
+              id="address"
+              name="address"
+              type="text"
+              class="form-control"
+              id="inputAddress"
+              placeholder="1234 Main St"
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="inputCity" class="form-label">City</label>
+            <input
+              id="city"
+              name="city"
+              type="text"
+              class="form-control"
+              id="inputCity"
+            />
+          </div>
+          <div class="col-md-4">
+            <label for="inputState" class="form-label">State</label>
+            <input
+              id="state"
+              name="state"
+              type="text"
+              class="form-control"
+              id="inputCity"
+            />
+          </div>
+          <div class="col-md-2">
+            <label for="inputZip" class="form-label">Zip</label>
+            <input
+              id="zipcode"
+              name="zipcode"
+              type="text"
+              class="form-control"
+              id="inputZip"
+            />
+          </div>
+          <div class="col-md-2">
+            <label for="total" class="form-label">Total Amount to Pay</label>
+            <input
+              id="total"
+              name="total"
+              readonly=""
+              type="text"
+              class="form-control"
+            />
+          </div>
+          <script>
+            $("#total").val(total);
+          </script>
+          <div class="col-12">
+            <button type="submit" class="btn order btn-primary">Place Order</button>
+          </div>
+        </form>
+        <script type='text/javascript'>
+          console.log('checkout script');
+          $(document).on('click', '.order', function(){
+            console.log('button clicked');
+            localStorage.clear();
+          });
+        </script>
+      </div>
+      {% endblock content %}
+    </div>
+  </body>
+</html>
